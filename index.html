@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>업무 비서</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="topbar">
+    <h1>업무 비서</h1>
+    <nav class="tabs" role="tablist">
+      <button class="tab active" data-view="inbox">자료 입력</button>
+      <button class="tab" data-view="tasks">할 일 <span id="taskCount" class="badge">0</span></button>
+      <button class="tab" data-view="schedule">일정</button>
+      <button class="tab" data-view="notes">정리 노트</button>
+      <button class="tab" data-view="settings">설정</button>
+    </nav>
+  </header>
+
+  <main>
+    <!-- 자료 입력 -->
+    <section id="view-inbox" class="view active">
+      <div class="card">
+        <h2>업무 자료 넣기</h2>
+        <p class="hint">통화 녹음 받아쓰기, 메일 본문, 메신저 대화를 붙여넣거나 텍스트 파일(.txt, .eml, .csv)을 올리세요. AI가 할 일, 일정, 핵심 내용을 뽑아냅니다.</p>
+        <div class="row">
+          <label>종류
+            <select id="sourceType">
+              <option value="call">통화 녹음</option>
+              <option value="email">메일</option>
+              <option value="messenger">메신저</option>
+              <option value="meeting">회의록</option>
+              <option value="other">기타</option>
+            </select>
+          </label>
+          <label>제목(선택)
+            <input id="sourceTitle" type="text" placeholder="예: 김부장 통화 11/2">
+          </label>
+        </div>
+        <textarea id="sourceText" rows="12" placeholder="여기에 내용을 붙여넣으세요"></textarea>
+        <div class="row actions">
+          <label class="file-btn">파일 올리기
+            <input id="fileInput" type="file" accept=".txt,.eml,.csv,.md,text/*" multiple hidden>
+          </label>
+          <button id="analyzeBtn" class="primary">분석하기</button>
+        </div>
+        <p id="status" class="status" aria-live="polite"></p>
+      </div>
+
+      <div class="card">
+        <h2>최근 분석한 자료</h2>
+        <ul id="sourceList" class="list"></ul>
+      </div>
+    </section>
+
+    <!-- 할 일 -->
+    <section id="view-tasks" class="view">
+      <div class="card">
+        <div class="row between">
+          <h2>할 일</h2>
+          <div class="row">
+            <select id="taskFilter">
+              <option value="open">진행 중</option>
+              <option value="all">전체</option>
+              <option value="done">완료</option>
+            </select>
+            <button id="addTaskBtn">+ 직접 추가</button>
+          </div>
+        </div>
+        <ul id="taskList" class="list"></ul>
+      </div>
+    </section>
+
+    <!-- 일정 -->
+    <section id="view-schedule" class="view">
+      <div class="card">
+        <div class="row between">
+          <h2>일정</h2>
+          <button id="exportIcsBtn">캘린더 파일(.ics) 내보내기</button>
+        </div>
+        <p class="hint">마감일이 있는 할 일과 약속이 날짜별로 모입니다. .ics 파일은 구글 캘린더, 아웃룩, 애플 캘린더에서 가져올 수 있습니다.</p>
+        <div id="scheduleList"></div>
+      </div>
+    </section>
+
+    <!-- 정리 노트 -->
+    <section id="view-notes" class="view">
+      <div class="card">
+        <h2>정리 노트</h2>
+        <div id="notesList"></div>
+      </div>
+    </section>
+
+    <!-- 설정 -->
+    <section id="view-settings" class="view">
+      <div class="card">
+        <h2>설정</h2>
+        <label>Anthropic API 키
+          <input id="apiKey" type="password" placeholder="sk-ant-..." autocomplete="off">
+        </label>
+        <p class="hint">키는 이 브라우저(localStorage)에만 저장되고, 분석할 때 Anthropic API로만 보냅니다. 공용 컴퓨터에서는 쓰지 마세요.</p>
+        <label>모델
+          <select id="model">
+            <option value="claude-opus-5-5">Claude Opus 5.5 (기본, 가장 정확)</option>
+            <option value="claude-sonnet-5-5">Claude Sonnet 5.5 (빠르고 저렴)</option>
+            <option value="claude-haiku-5-5">Claude Haiku 5.5 (가장 저렴)</option>
+          </select>
+        </label>
+        <div class="row actions">
+          <button id="saveSettings" class="primary">저장</button>
+        </div>
+        <hr>
+        <h3>데이터</h3>
+        <div class="row">
+          <button id="exportJson">백업 내보내기(JSON)</button>
+          <label class="file-btn">백업 불러오기
+            <input id="importJson" type="file" accept=".json" hidden>
+          </label>
+          <button id="clearAll" class="danger">전체 삭제</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
